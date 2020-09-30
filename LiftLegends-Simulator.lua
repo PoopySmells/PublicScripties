@@ -46,6 +46,7 @@ end
 
 local autoTab = lib:CreateWindow('Auto-Tools')
 local farmTab = lib:CreateWindow('Farming')
+local miscTab = lib:CreateWindow('Misc')
 local setTab = lib:CreateWindow('Settings')
 
 autoTab:AddToggle('Auto Click',function()
@@ -74,7 +75,7 @@ RunService.RenderStepped:Connect(function()
     local Amount = string.split(localPlayer.PlayerGui.Main.LeftFrame.EnergyFrame.AmountLabel.Text,"/");
     if SellAuto then
         local GUIPopup = localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell;
-        if (Amount[1] == Amount[2]) or GUIPopup.Visible then 
+        if (Amount[1] == Amount[2]) or GUIPopup.Visible and SellAuto then 
             localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell.Visible = false;
             doRemote(2)
         end
@@ -94,7 +95,7 @@ spawn(function()
             for i,v in pairs(workspace:GetDescendants()) do 
                 if v:IsA("Model") and v.Name == 'Treadmill' then 
                     if runAuto and isTreading then 
-                        game.Players.LocalPlayer.Character:MoveTo(v:FindFirstChildOfClass('Part').Position)    
+                        localPlayer.Character:MoveTo(v:FindFirstChildOfClass('Part').Position)    
                     end
                     wait()
                 end
@@ -103,6 +104,27 @@ spawn(function()
             isTreading = false;
         end
         wait()
+    end
+end)
+
+local old = nil
+function randomModel()
+    for i,v in pairs(game:GetService("Workspace").PowerTrainingFolder:GetChildren()) do 
+        if v.Name == 'Model' and v ~= old then 
+            old = v;
+            return v;
+        end
+    end
+end
+
+farmTab:AddToggle('Farm Punches',function()
+    farmPunches = not farmPunches;
+end)
+
+spawn(function()
+    while true do 
+        if farmPunches then Event1:FireServer("Punching",randomModel()) end
+        wait(0.2)
     end
 end)
 
