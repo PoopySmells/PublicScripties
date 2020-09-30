@@ -46,6 +46,8 @@ end
 
 local autoTab = lib:CreateWindow('Auto-Tools')
 local farmTab = lib:CreateWindow('Farming')
+local eggTab = lib:CreateWindow('Eggs')
+local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
 local setTab = lib:CreateWindow('Settings')
 
@@ -110,7 +112,7 @@ end)
 local old = nil
 function randomModel()
     for i,v in pairs(game:GetService("Workspace").PowerTrainingFolder:GetChildren()) do 
-        if v.Name == 'Model' and v ~= old then 
+        if v ~= old then 
             old = v;
             return v;
         end
@@ -123,8 +125,12 @@ end)
 
 spawn(function()
     while true do 
-        if farmPunches then Event1:FireServer("Punching",randomModel()) end
-        wait(0.2)
+        if farmPunches then 
+            local ModelTo = randomModel()
+            Event1:FireServer("Punching",ModelTo) 
+            wait()
+        end
+        wait(0.4)
     end
 end)
 
@@ -133,6 +139,76 @@ miscTab:AddButton('Redeem All Codes',function()
     for i = 1,#codeList do 
         if codeList[i].Name then 
             Event1:FireServer("Codes",codeList[i].Name)
+        end
+    end
+end)
+
+spawn(function()
+    for i,v in pairs(workspace:GetChildren()) do 
+        if v:IsA('MeshPart') then 
+            if string.sub(v.Name,1,4) == "Tier" then 
+                local name = string.sub(v.Name,1,5);
+                teleportTab:AddButton(name,function()
+                    localPlayer.Character:MoveTo(v.Position)
+                end)
+            end
+        end
+    end
+end)
+
+local tiertbl = {};
+spawn(function()
+    for i,v in pairs(workspace:GetChildren()) do 
+        if v:IsA('MeshPart') then 
+            if string.sub(v.Name,1,4) == "Tier" then
+                table.insert(tiertbl,string.sub(v.Name,1,5));
+            end
+        end
+    end
+end)
+
+local TierArgs = {[1] = 'PurchaseCrate',[2] = "Tier1",[3] = 1};
+
+autoTab:AddToggle('Auto-OpenEggs',function()
+    OpenEggsAuto = not OpenEggsAuto;
+end)
+
+local eggTierSpeed = 1
+setTab:AddSlider("Egg speed",1,6,3,function(var)
+    eggTierSpeed = var
+end)
+
+eggTab:AddToggle('Randomize Tier',function()
+    RandomEgg = not RandomEgg;
+end)
+
+spawn(function()
+    while true do 
+        if OpenEggsAuto then 
+            if (not RandomEgg) then
+                Event1:FireServer(unpack(TierArgs))
+            else
+                local chosen = tiertbl[math.random(1,#tiertbl)]
+                local tier1 = chosen;
+                local tier2 = string.sub(chosen,5,5);
+                Event1:FireServer("PurchaseCrate",tier1,tier2)
+            end
+        end
+        wait(eggTierSpeed + 0.02)
+    end
+end)
+
+spawn(function()
+    for i,v in pairs(workspace:GetChildren()) do 
+        if v:IsA('MeshPart') then 
+            if string.sub(v.Name,1,4) == "Tier" then 
+                local name = string.sub(v.Name,1,5);
+                local tierNum = string.sub(v.Name,5,5);
+                eggTab:AddButton(name,function()
+                    TierArgs[2] = name;
+                    TierArgs[3] = tierNum;
+                end)
+            end
         end
     end
 end)
