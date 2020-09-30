@@ -43,7 +43,7 @@ end
     doRemote(3) // Fires (Running remote) -- Gains Energy for running faster
 ]]
 
-local localTab = lib:CreateWindow('LocalPlayer')
+--local localTab = lib:CreateWindow('LocalPlayer')
 local autoTab = lib:CreateWindow('Auto-Tools')
 local setTab = lib:CreateWindow('Settings')
 
