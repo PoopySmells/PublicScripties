@@ -89,6 +89,10 @@ farmTab:AddToggle('Farm Run',function()
     runAuto = not runAuto;
 end)
 
+farmTab:AddToggle('Farm Endurance',function()
+    AutoEndurance = not AutoEndurance;
+end)
+
 spawn(function()
     while true do 
         local isTreading = false;
@@ -99,7 +103,7 @@ spawn(function()
                     if runAuto and isTreading then 
                         localPlayer.Character:MoveTo(v:FindFirstChildOfClass('Part').Position)    
                     end
-                    wait()
+                    wait(1)
                 end
             end
         else
@@ -111,7 +115,7 @@ end)
 
 local old = nil
 function randomModel()
-    for i,v in pairs(game:GetService("Workspace").PowerTrainingFolder:GetChildren()) do 
+    for i,v in pairs(workspace.PowerTrainingFolder:GetChildren()) do 
         if v ~= old then 
             old = v;
             return v;
@@ -156,59 +160,71 @@ spawn(function()
     end
 end)
 
-local tiertbl = {};
-spawn(function()
-    for i,v in pairs(workspace:GetChildren()) do 
-        if v:IsA('MeshPart') then 
-            if string.sub(v.Name,1,4) == "Tier" then
-                table.insert(tiertbl,string.sub(v.Name,1,5));
-            end
+miscTab:AddButton("Unlock All Gamepasses",function()
+    local myPlayers = ReplicatedStorage.Players[localPlayer.Name].Gamepass:GetChildren();
+    local toUnlock = {"AutoBuy","AutoRank","AutoClick","ZoneUnlock","FastLifting"}
+    for i,v in ipairs(myPlayers) do 
+        if v.Name == toUnlock[i].Name then 
+            v.Value = true;
         end
     end
 end)
 
-local TierArgs = {[1] = 'PurchaseCrate',[2] = "Tier1",[3] = 1};
-
-autoTab:AddToggle('Auto-OpenEggs',function()
-    OpenEggsAuto = not OpenEggsAuto;
-end)
-
-local eggTierSpeed = 1
-setTab:AddSlider("Egg speed",1,6,3,function(var)
-    eggTierSpeed = var
-end)
-
-eggTab:AddToggle('Randomize Tier',function()
-    RandomEgg = not RandomEgg;
+autoTab:AddToggle('Auto-Rebirth',function()
+    rebirthAuto = not rebirthAuto;
 end)
 
 spawn(function()
     while true do 
-        if OpenEggsAuto then 
-            if (not RandomEgg) then
-                Event1:FireServer(unpack(TierArgs))
-            else
-                local chosen = tiertbl[math.random(1,#tiertbl)]
-                local tier1 = chosen;
-                local tier2 = string.sub(chosen,5,5);
-                Event1:FireServer("PurchaseCrate",tier1,tier2)
-            end
+        if rebirthAuto then 
+            Event1:FireServer("Purchase","Rank")
         end
-        wait(eggTierSpeed + 0.02)
+        wait()
     end
 end)
 
 spawn(function()
-    for i,v in pairs(workspace:GetChildren()) do 
-        if v:IsA('MeshPart') then 
-            if string.sub(v.Name,1,4) == "Tier" then 
-                local name = string.sub(v.Name,1,5);
-                local tierNum = string.sub(v.Name,5,5);
-                eggTab:AddButton(name,function()
-                    TierArgs[2] = name;
-                    TierArgs[3] = tierNum;
-                end)
+    local isEndurance = false;
+    while true do 
+        if AutoEndurance then 
+            isEndurance = true;
+            for i,v in pairs(workspace.VitalityTrainingFolder:GetChildren()) do 
+                if v:IsA("Model") then 
+                    if AutoEndurance and isEndurance then 
+                        localPlayer.Character:MoveTo(v:FindFirstChildOfClass('UnionOperation').Position)    
+                    end
+                    wait(5)
+                end
             end
+        else
+            isEndurance = false;
         end
+        wait()
+    end
+end)
+
+autoTab:AddToggle('AutoBuy-Strength',function()
+    StrengthAutobuy = not StrengthAutobuy;
+end)
+
+autoTab:AddToggle('AutoBuy-Endurance',function()
+    EnduranceAutobuy = not EnduranceAutobuy;
+end)
+
+spawn(function()
+    while true do 
+        if EnduranceAutobuy then 
+            Event1:FireServer("Purchase","Endurance")
+        end
+        wait()
+    end
+end)
+
+spawn(function()
+    while true do 
+        if StrengthAutobuy then 
+            Event1:FireServer("Purchase","Strength")
+        end
+        wait()
     end
 end)
