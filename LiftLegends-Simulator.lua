@@ -134,7 +134,7 @@ spawn(function()
             Event1:FireServer("Punching",ModelTo) 
             wait()
         end
-        wait(0.4)
+        wait(0.6)
     end
 end)
 
@@ -193,7 +193,7 @@ spawn(function()
                     if AutoEndurance and isEndurance then 
                         localPlayer.Character:MoveTo(v:FindFirstChildOfClass('UnionOperation').Position)    
                     end
-                    wait(5)
+                    wait(3)
                 end
             end
         else
