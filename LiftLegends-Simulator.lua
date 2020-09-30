@@ -29,6 +29,7 @@ local Players = game:GetService('Players');
 local localPlayer = Players.LocalPlayer;
 local ReplicatedStorage = game:GetService"ReplicatedStorage";
 local RunService = game:GetService('RunService')
+local renderedStepped = RunService.RenderStepped
 --{ Events // Remotes }--                                           
 local Event1 = ReplicatedStorage.Network.Port1;
 
@@ -43,16 +44,16 @@ end
     doRemote(3) // Fires (Running remote) -- Gains Energy for running faster
 ]]
 
---local localTab = lib:CreateWindow('LocalPlayer')
 local autoTab = lib:CreateWindow('Auto-Tools')
+local farmTab = lib:CreateWindow('Farming')
 local setTab = lib:CreateWindow('Settings')
 
-autoTab:AddToggle('Auto-Click',function(arg)
+autoTab:AddToggle('Auto Click',function()
     ClickAuto = not ClickAuto;
 end)
 
 local SpeedOfClick = 1
-setTab:AddSlider("Auto-Click Speed",0,2,1,function(var)
+setTab:AddSlider("Click Speed",0,2,1,function(var)
     SpeedOfClick = var
 end)
 
@@ -65,28 +66,51 @@ spawn(function()
     end
 end)
 
-function checkSell()
-    for i,v in ipairs(ReplicatedStorage:GetDescendants()) do 
-        if v:IsA('NumberValue') and v.Parent.Parent.Name == localPlayer.Name then 
-            if v.Energy.Value == v.EnergyMax.Value then 
-                return true;
-            end
-        end
-    end
-end 
-
-autoTab:AddToggle('Auto-Sell',function(arg)
+autoTab:AddToggle('Auto Sell',function()
     SellAuto = not SellAuto;
 end)
 
 RunService.RenderStepped:Connect(function()
     local Amount = string.split(localPlayer.PlayerGui.Main.LeftFrame.EnergyFrame.AmountLabel.Text,"/");
     if SellAuto then
-        local IsSell = checkSell();
-        if (Amount[1] == Amount[2] and IsSell) then 
+        local GUIPopup = localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell;
+        if (Amount[1] == Amount[2]) or GUIPopup.Visible then 
+            localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell.Visible = false;
             doRemote(2)
         end
-        localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell.Enabled = false;
     end
-    RunService.RenderStepped:Wait()
+    renderedStepped:Wait()
+end)
+
+farmTab:AddToggle('Farm Run',function()
+    runAuto = not runAuto;
+end)
+
+spawn(function()
+    while true do 
+        local isTreading = false;
+        if runAuto then 
+            isTreading = true;
+            for i,v in pairs(workspace:GetDescendants()) do 
+                if v:IsA("Model") and v.Name == 'Treadmill' then 
+                    if runAuto and isTreading then 
+                        game.Players.LocalPlayer.Character:MoveTo(v:FindFirstChildOfClass('Part').Position)    
+                    end
+                    wait()
+                end
+            end
+        else
+            isTreading = false;
+        end
+        wait()
+    end
+end)
+
+miscTab:AddButton('Redeem All Codes',function()
+    local codeList = ReplicatedStorage.Codes:GetChildren();
+    for i = 1,#codeList do 
+        if codeList[i].Name then 
+            Event1:FireServer("Codes",codeList[i].Name)
+        end
+    end
 end)
