@@ -50,7 +50,6 @@ local areaTab = lib:CreateWindow('Areas')
 local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
 
--- Removed Speed
 autoTab:AddToggle('Auto Click',function()
     ClickAuto = not ClickAuto;
 end)
@@ -88,17 +87,19 @@ farmTab:AddToggle('Farm Endurance',function()
     AutoEndurance = not AutoEndurance;
 end)
 
+
 spawn(function()
+    local isTreading = false;
+    local oldTread;
     while true do 
-        local isTreading = false;
         if runAuto then 
             isTreading = true;
             for i,v in pairs(workspace:GetDescendants()) do 
-                if v:IsA("Model") and v.Name == 'Treadmill' then 
+                if v:IsA("Model") and v.Name == 'Treadmill' and v ~= oldTread then 
                     if runAuto and isTreading then 
-                        localPlayer.Character:MoveTo(v:FindFirstChildOfClass('Part').Position)    
+                        oldTread = v
+                        localPlayer.Character:MoveTo(v:FindFirstChildOfClass("Part").Position)
                     end
-                    wait(1)
                 end
             end
         else
@@ -133,12 +134,12 @@ spawn(function()
     end
 end)
 
-miscTab:AddButton('Redeem All Codes',function()
-    local codeList = ReplicatedStorage.Codes:GetChildren();
-    for i = 1,#codeList do 
-        Event1:FireServer("Codes",codeList[i].Name)
-        wait(.5)
-    end
+miscTab:AddButton('Discord',function()
+    setclipboard("https://crypthub.xyz/GetDiscord")
+end)
+
+miscTab:AddButton('my Discord Name/Id',function()
+    setclipboard("YoungStar#5628/628384321773764618")
 end)
 
 spawn(function()
@@ -151,6 +152,43 @@ spawn(function()
                 end)
             end
         end
+    end
+end)
+
+farmTab:AddToggle('Farm All',function()
+    allFarming = not allFarming;
+end)
+
+function getTread()
+    for i,v in pairs(workspace:GetDescendants()) do 
+        if v:IsA("Model") and v.Name == 'Treadmill'then 
+            return v:FindFirstChildOfClass("Part");
+        end
+    end
+end
+
+function getEndurancePad()
+    for i,v in pairs(workspace.VitalityTrainingFolder:GetChildren()) do 
+        if v:IsA("Model") then 
+            return v:FindFirstChildOfClass('UnionOperation'); 
+        end
+    end
+end
+
+spawn(function()
+    while true do 
+        if allFarming then
+            local treadMill = getTread();
+            localPlayer.Character:MoveTo(treadMill.Position);
+            wait(1)
+            local EndurancePad = getEndurancePad();
+            localPlayer.Character:MoveTo(EndurancePad.Position);
+            wait(4)
+            local ModelTo = randomModel()
+            Event1:FireServer("Punching",ModelTo) 
+            wait(1)
+        end
+        wait()
     end
 end)
 
@@ -172,15 +210,7 @@ spawn(function()
     end
 end)
 
-miscTab:AddButton("Unlock All Gamepasses",function()
-    local myPlayers = ReplicatedStorage.Players[localPlayer.Name].Gamepass:GetChildren();
-    local toUnlock = {"AutoBuy","AutoRank","AutoClick","ZoneUnlock","FastLifting"}
-    for i,v in ipairs(myPlayers) do 
-        if v.Name == toUnlock[i].Name then 
-            v.Value = true;
-        end
-    end
-end)
+
 
 autoTab:AddToggle('Auto-Rebirth',function()
     rebirthAuto = not rebirthAuto;
