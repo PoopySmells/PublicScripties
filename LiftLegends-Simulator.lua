@@ -46,7 +46,6 @@ end
 
 local autoTab = lib:CreateWindow('Auto-Tools')
 local farmTab = lib:CreateWindow('Farming')
-local eggTab = lib:CreateWindow('Eggs')
 local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
 local setTab = lib:CreateWindow('Settings')
@@ -141,9 +140,8 @@ end)
 miscTab:AddButton('Redeem All Codes',function()
     local codeList = ReplicatedStorage.Codes:GetChildren();
     for i = 1,#codeList do 
-        if codeList[i].Name then 
-            Event1:FireServer("Codes",codeList[i].Name)
-        end
+        Event1:FireServer("Codes",codeList[i].Name)
+        wait(.5)
     end
 end)
 
