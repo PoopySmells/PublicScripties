@@ -46,17 +46,12 @@ end
 
 local autoTab = lib:CreateWindow('Auto-Tools')
 local farmTab = lib:CreateWindow('Farming')
+local areaTab = lib:CreateWindow('Areas')
 local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
-local setTab = lib:CreateWindow('Settings')
 
 autoTab:AddToggle('Auto Click',function()
     ClickAuto = not ClickAuto;
-end)
-
-local SpeedOfClick = 1
-setTab:AddSlider("Click Speed",0,2,1,function(var)
-    SpeedOfClick = var
 end)
 
 spawn(function()
@@ -64,7 +59,7 @@ spawn(function()
         if (ClickAuto and localPlayer.Character) then 
             doRemote(1)
         end 
-        wait(SpeedOfClick)
+        wait()
     end
 end)
 
@@ -155,6 +150,24 @@ spawn(function()
                 end)
             end
         end
+    end
+end)
+
+spawn(function()
+    local Areas = {};
+    for i,v in pairs(workspace:GetChildren()) do 
+        if string.sub(v.Name,1,4) == "Area" then 
+            Areas[#Areas + 1] = {
+                Name = v.Name,
+                PartPos = v.Position
+            }
+        end
+    end
+
+    for i,v in ipairs(Areas) do 
+        areaTab:AddButton(v.Name,function()
+            game.Players.LocalPlayer.Character:MoveTo(v.PartPos*Vector3.new(.25,0,.25))
+        end)
     end
 end)
 
