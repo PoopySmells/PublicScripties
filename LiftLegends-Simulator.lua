@@ -50,6 +50,7 @@ local areaTab = lib:CreateWindow('Areas')
 local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
 
+-- Removed Speed
 autoTab:AddToggle('Auto Click',function()
     ClickAuto = not ClickAuto;
 end)
