@@ -43,15 +43,14 @@ end
     doRemote(2) // Fires (Sell remote) -- ^^
     doRemote(3) // Fires (Running remote) -- Gains Energy for running faster
 ]]
-
 local autoTab = lib:CreateWindow('Auto-Tools')
 local farmTab = lib:CreateWindow('Farming')
 local areaTab = lib:CreateWindow('Areas')
 local teleportTab = lib:CreateWindow('Teleports')
 local miscTab = lib:CreateWindow('Misc')
 
-autoTab:AddToggle('Auto Click',function()
-    ClickAuto = not ClickAuto;
+autoTab:AddToggle('Auto Click',function(bool)
+    ClickAuto = bool;
 end)
 
 spawn(function()
@@ -63,8 +62,8 @@ spawn(function()
     end
 end)
 
-autoTab:AddToggle('Auto Sell',function()
-    SellAuto = not SellAuto;
+autoTab:AddToggle('Auto Sell',function(bool)
+    SellAuto = bool;
 end)
 
 RunService.RenderStepped:Connect(function()
@@ -79,14 +78,13 @@ RunService.RenderStepped:Connect(function()
     renderedStepped:Wait()
 end)
 
-farmTab:AddToggle('Farm Run',function()
-    runAuto = not runAuto;
+farmTab:AddToggle('Farm Stanima',function(bool)
+    runAuto = bool;
 end)
 
-farmTab:AddToggle('Farm Endurance',function()
-    AutoEndurance = not AutoEndurance;
+farmTab:AddToggle('Farm Endurance',function(bool)
+    AutoEndurance = bool;
 end)
-
 
 spawn(function()
     local isTreading = false;
@@ -119,8 +117,8 @@ function randomModel()
     end
 end
 
-farmTab:AddToggle('Farm Punches',function()
-    farmPunches = not farmPunches;
+farmTab:AddToggle('Farm Strength',function(bool)
+    farmPunches = bool;
 end)
 
 spawn(function()
@@ -134,12 +132,33 @@ spawn(function()
     end
 end)
 
-miscTab:AddButton('Discord',function()
+miscTab:AddButton('Copy Invite',function()
     setclipboard("https://crypthub.xyz/GetDiscord")
 end)
 
-miscTab:AddButton('my Discord Name/Id',function()
-    setclipboard("YoungStar#5628/628384321773764618")
+local funcCooldown;
+for i,v in pairs(getgc()) do 
+    if typeof(v) == "function" and debug.getinfo(v).name == "updateClickCooldown" then
+        func = v;
+    end
+end
+
+local gamepass = ReplicatedStorage.Players[localPlayer.Name].Gamepass.FastLifting
+miscTab:AddToggle('Fast Click',function(bool)
+    FastClickOpt = bool
+    gamepass.Value = bool
+end)
+
+local numberChange = 0.02
+spawn(function()
+    while true do 
+        if FastClickOpt then 
+            debug.setupvalue(funcCooldown,2,numberChange)
+            debug.setconstant(funcCooldown,4,numberChange)
+            funcCooldown()
+        end
+        wait()
+    end
 end)
 
 spawn(function()
@@ -155,8 +174,8 @@ spawn(function()
     end
 end)
 
-farmTab:AddToggle('Farm All',function()
-    allFarming = not allFarming;
+farmTab:AddToggle('Farm All',function(bool)
+    allFarming = bool;
 end)
 
 function getTread()
@@ -212,8 +231,8 @@ end)
 
 
 
-autoTab:AddToggle('Auto-Rebirth',function()
-    rebirthAuto = not rebirthAuto;
+autoTab:AddToggle('Auto-Rebirth',function(bool)
+    rebirthAuto = bool;
 end)
 
 spawn(function()
@@ -245,12 +264,12 @@ spawn(function()
     end
 end)
 
-autoTab:AddToggle('AutoBuy-Strength',function()
-    StrengthAutobuy = not StrengthAutobuy;
+autoTab:AddToggle('AutoBuy-Strength',function(bool)
+    StrengthAutobuy = bool;
 end)
 
-autoTab:AddToggle('AutoBuy-Endurance',function()
-    EnduranceAutobuy = not EnduranceAutobuy;
+autoTab:AddToggle('AutoBuy-Endurance',function(bool)
+    EnduranceAutobuy = bool;
 end)
 
 spawn(function()
