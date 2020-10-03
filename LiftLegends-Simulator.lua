@@ -2480,7 +2480,5 @@ spawn(function()
 	end
 end)
 
-print(LabelFind(1))
-
 autoTab.Show()
 library.FormatWindows()
