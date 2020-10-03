@@ -116,8 +116,6 @@ function teleportTo(player)
     end
 end 
 
-teleportTo(game:GetService("Players"))
-
 spawn(function()
     while true do 
         if killAutomatic then 
