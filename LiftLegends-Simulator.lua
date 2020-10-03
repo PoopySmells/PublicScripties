@@ -2126,34 +2126,19 @@ autoTab:AddSwitch('Auto Kill',function(bool)
     killAutomatic = bool
 end)
 
-local PlayersFolder = ReplicatedStorage.Players;
-
-function teleportTo(player)
-    local myChar = localPlayer.Character
-    local humanoidRoot = myChar:FindFirstChild("HumanoidRootPart");
-    
-    if player and player.Character and player.Character.Humanoid.Health > 1 then 
-        repeat
-            local playerChar = player.Character;
-            humanoidRoot.CFrame = playerChar.HumanoidRootPart.CFrame*Vector3.new(-humanoidRoot.CFrame.lookVector)
-            wait()
-        until killAutomatic == false or (not player.Character and player.Character.Humanoid.Health < 1)
-    end
-end 
 
 spawn(function()
+	local PlayersFolder = ReplicatedStorage.Players;
     while true do 
 		if killAutomatic then 
 			for i,v in pairs(game:GetService("Players"):GetPlayers()) do 
 				if (v.Name ~= game.Players.LocalPlayer.Name and v.Character) then 
-					if (PlayersFolder[v.Name] and PlayersFolder[v.Name].Game.PvP.Value) then  
-						local argTbl = {};
-						table.insert(argTbl)
+					if (PlayersFolder[v.Name] and PlayersFolder[v.Name].Game.PvP.Value == true) then  
 						repeat
 							localPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame*Vector3.new(-localPlayer.Character.HumanoidRootPart.CFrame.lookVector)
 							wait(1)
-							ReplicatedStorage.Network.Port1:FireServer(random,{plr})
-						until killAutomatic == false or PlayersFolder[plr.Name].Game.Health == 0
+							ReplicatedStorage.Network.Port1:FireServer(random,{v})
+						until killAutomatic == false or PlayersFolder[v.Name].Game.Health == 0
 					end
 				end
 			end
