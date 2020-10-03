@@ -1,30 +1,4 @@
 --[[
-
- /$$     /$$                                       /$$$$$$   /$$                        
-|  $$   /$$/                                      /$$__  $$ | $$                        
- \  $$ /$$//$$$$$$  /$$   /$$ /$$$$$$$   /$$$$$$ | $$  \__//$$$$$$    /$$$$$$   /$$$$$$ 
-  \  $$$$//$$__  $$| $$  | $$| $$__  $$ /$$__  $$|  $$$$$$|_  $$_/   |____  $$ /$$__  $$
-   \  $$/| $$  \ $$| $$  | $$| $$  \ $$| $$  \ $$ \____  $$ | $$      /$$$$$$$| $$  \__/
-    | $$ | $$  | $$| $$  | $$| $$  | $$| $$  | $$ /$$  \ $$ | $$ /$$ /$$__  $$| $$      
-    | $$ |  $$$$$$/|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$/ |  $$$$/|  $$$$$$$| $$      
-    |__/  \______/  \______/ |__/  |__/ \____  $$ \______/   \___/   \_______/|__/      
-                                        /$$  \ $$                                       
-                                       |  $$$$$$/                                       
-                                        \______/                                        
-                          /$$$$$$                      /$$             /$$              
-                         /$$__  $$                    |__/            | $$              
-                        | $$  \__/  /$$$$$$$  /$$$$$$  /$$  /$$$$$$  /$$$$$$   /$$$$$$$ 
-                        |  $$$$$$  /$$_____/ /$$__  $$| $$ /$$__  $$|_  $$_/  /$$_____/ 
-                         \____  $$| $$      | $$  \__/| $$| $$  \ $$  | $$   |  $$$$$$  
-                         /$$  \ $$| $$      | $$      | $$| $$  | $$  | $$ /$$\____  $$ 
-                        |  $$$$$$/|  $$$$$$$| $$      | $$| $$$$$$$/  |  $$$$//$$$$$$$/ 
-                         \______/  \_______/|__/      |__/| $$____/    \___/ |_______/  
-                                                          | $$                          
-                                                          | $$                          
-                                                          |__/                                                                                                                                                                                                                                                               
---]]
-
---[[
 	ui-engine-v2
 	version 1.3a
 	by Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)
@@ -2048,6 +2022,34 @@ function library:AddWindow(title, options)
 	return window_data, Window
 end
 
+-- // LIBRARY ABOVE // --
+
+--[[
+
+ /$$     /$$                                       /$$$$$$   /$$                        
+|  $$   /$$/                                      /$$__  $$ | $$                        
+ \  $$ /$$//$$$$$$  /$$   /$$ /$$$$$$$   /$$$$$$ | $$  \__//$$$$$$    /$$$$$$   /$$$$$$ 
+  \  $$$$//$$__  $$| $$  | $$| $$__  $$ /$$__  $$|  $$$$$$|_  $$_/   |____  $$ /$$__  $$
+   \  $$/| $$  \ $$| $$  | $$| $$  \ $$| $$  \ $$ \____  $$ | $$      /$$$$$$$| $$  \__/
+    | $$ | $$  | $$| $$  | $$| $$  | $$| $$  | $$ /$$  \ $$ | $$ /$$ /$$__  $$| $$      
+    | $$ |  $$$$$$/|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$/ |  $$$$/|  $$$$$$$| $$      
+    |__/  \______/  \______/ |__/  |__/ \____  $$ \______/   \___/   \_______/|__/      
+                                        /$$  \ $$                                       
+                                       |  $$$$$$/                                       
+                                        \______/                                        
+                          /$$$$$$                      /$$             /$$              
+                         /$$__  $$                    |__/            | $$              
+                        | $$  \__/  /$$$$$$$  /$$$$$$  /$$  /$$$$$$  /$$$$$$   /$$$$$$$ 
+                        |  $$$$$$  /$$_____/ /$$__  $$| $$ /$$__  $$|_  $$_/  /$$_____/ 
+                         \____  $$| $$      | $$  \__/| $$| $$  \ $$  | $$   |  $$$$$$  
+                         /$$  \ $$| $$      | $$      | $$| $$  | $$  | $$ /$$\____  $$ 
+                        |  $$$$$$/|  $$$$$$$| $$      | $$| $$$$$$$/  |  $$$$//$$$$$$$/ 
+                         \______/  \_______/|__/      |__/| $$____/    \___/ |_______/  
+                                                          | $$                          
+                                                          | $$                          
+                                                          |__/                                                                                                                                                                                                                                                               
+--]]
+
 local main = library:AddWindow("Lift Legends Simulator | Auto farm & more")
 local Players = game:GetService('Players');
 local localPlayer = Players.LocalPlayer;
@@ -2089,13 +2091,24 @@ autoTab:AddSwitch('Auto Sell',function(bool)
     SellAuto = bool;
 end)
 
+function sellPosition()
+    local sellyTable = {};
+    for i,v in pairs(workspace:GetChildren()) do 
+        if string.sub(v.Name,1,9) == 'SellPoint' then 
+            sellyTable[#sellyTable + 1] = v;
+        end
+    end
+    
+    return sellyTable[#sellyTable].Position;
+end
+
 RunService.RenderStepped:Connect(function()
     local Amount = string.split(localPlayer.PlayerGui.Main.LeftFrame.EnergyFrame.AmountLabel.Text,"/");
     if SellAuto then
         local GUIPopup = localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell;
-        if (Amount[1] == Amount[2]) or GUIPopup.Visible and SellAuto then 
+		if (Amount[1] == Amount[2]) or GUIPopup.Visible and SellAuto then 
             localPlayer.PlayerGui.Main.Frame.FrameYY.FrameXY.Sell.Visible = false;
-            doRemote(2)
+			doRemote(2)
         end
     end
     renderedStepped:Wait()
@@ -2114,17 +2127,6 @@ autoTab:AddSwitch('Auto Kill',function(bool)
 end)
 
 local PlayersFolder = ReplicatedStorage.Players;
-function plrToKill()
-    for i,v in pairs(game:GetService("Players"):GetPlayers()) do 
-        if (v.Name ~= game.Players.LocalPlayer.Name and v.Character) then 
-            if (PlayersFolder[v.Name] and PlayersFolder[v.Name].Game.PvP.Value) then  
-                if killAutomatic then 
-                    return v;
-                end
-            end
-        end
-    end
-end
 
 function teleportTo(player)
     local myChar = localPlayer.Character
@@ -2135,20 +2137,26 @@ function teleportTo(player)
             local playerChar = player.Character;
             humanoidRoot.CFrame = playerChar.HumanoidRootPart.CFrame*Vector3.new(-humanoidRoot.CFrame.lookVector)
             wait()
-        until autoKill == false or (not player.Character and player.Character.Humanoid.Health < 1)
+        until killAutomatic == false or (not player.Character and player.Character.Humanoid.Health < 1)
     end
 end 
 
 spawn(function()
     while true do 
-        if killAutomatic then 
-			local plr = plrToKill()
-			teleportTo(plr)
-            repeat
-                local random = (math.random(1,2) == 2 and "Punch" or "Stomp")
-                ReplicatedStorage.Network.Port1:FireServer(random,{plr})
-                wait(.05)
-			until killAutomatic == false or (plr.Character and PlayersFolder[plr.Name].Game.Health == 0)
+		if killAutomatic then 
+			for i,v in pairs(game:GetService("Players"):GetPlayers()) do 
+				if (v.Name ~= game.Players.LocalPlayer.Name and v.Character) then 
+					if (PlayersFolder[v.Name] and PlayersFolder[v.Name].Game.PvP.Value) then  
+						local argTbl = {};
+						table.insert(argTbl)
+						repeat
+							localPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame*Vector3.new(-localPlayer.Character.HumanoidRootPart.CFrame.lookVector)
+							wait(1)
+							ReplicatedStorage.Network.Port1:FireServer(random,{plr})
+						until killAutomatic == false or PlayersFolder[plr.Name].Game.Health == 0
+					end
+				end
+			end
         end
         wait()
     end
@@ -2187,26 +2195,18 @@ spawn(function()
     end
 end)
 
-local old = nil
-function randomModel()
-    for i,v in pairs(workspace.PowerTrainingFolder:GetChildren()) do 
-        if v ~= old then 
-            old = v;
-            return v;
-        end
-    end
-end
-
 farmTab:AddSwitch('Farm Strength',function(bool)
     farmPunches = bool;
 end)
 
 spawn(function()
     while true do 
-        if farmPunches then 
-            local ModelTo = randomModel()
-            Event1:FireServer("Punching",ModelTo) 
-            wait()
+		if farmPunches then 
+			for i,v in pairs(workspace.PowerTrainingFolder:GetChildren()) do 
+				if v:IsA("Model") then 
+					Event1:FireServer("Punching",ModelTo) 
+				end
+			end
         end
         wait(0.6)
     end
@@ -2241,8 +2241,8 @@ spawn(function()
     end
 end)
 
-farmTab:AddSwitch('Farm All',function(bool)
-    allFarming = bool;
+farmTab:AddSwitch('Auto Farm',function(bool)
+    autoFarmT = bool;
 end)
 
 function getTread()
@@ -2262,6 +2262,8 @@ function getEndurancePad()
 end
 
 local Areas = {};
+Areas[1] = {Name = "Area1",PartPos = workspace.SellPoint1.Position};
+
 for i,v in pairs(workspace:GetChildren()) do 
 	if string.sub(v.Name,1,4) == "Area" then 
 		Areas[#Areas + 1] = {
@@ -2290,8 +2292,9 @@ end)
 local TiersEgg = {};
 for i,v in pairs(workspace:GetChildren()) do 
 	if string.sub(v.Name,1,4) == "Tier" then 
+		local name = string.sub(v.Name,1,5)
 		TiersEgg[#TiersEgg + 1] = {
-			Name = v.Name,
+			Name = name,
 			PartPos = v.Position
 		}
 	end
@@ -2324,7 +2327,7 @@ teleportTab:AddButton("Teleport to Egg/Tier",function()
 		localPlayer.Character:MoveTo(TiersEgg[SelectedArea].PartPos)
 	end
 end)
--- Test it out it works :)
+
 autoTab:AddSwitch('Auto-Rebirth',function(bool)
     rebirthAuto = bool;
 end)
@@ -2358,9 +2361,11 @@ spawn(function()
             isEndurance = true;
             for i,v in pairs(workspace.VitalityTrainingFolder:GetChildren()) do 
                 if v:IsA("Model") then 
-                    if AutoEndurance and isEndurance then 
-						localPlayer.Character:MoveTo(v:FindFirstChildOfClass('UnionOperation').Position)
-						moveTo(v:FindFirstChildOfClass('UnionOperation').Position + Vector3.new(2,0,2))
+					if AutoEndurance and isEndurance then
+						local thing = v:FindFirstChildOfClass('UnionOperation').Position
+						localPlayer.Character:MoveTo(thing + Vector3.new(2,0,-2))
+						wait(.2)
+						moveTo(thing)
                     end
                     wait(3)
                 end
@@ -2400,9 +2405,82 @@ spawn(function()
 	end)
 end)
 
+local function LabelFind(int)
+	local ooooooooooh = game:GetService("ReplicatedStorage").Players[localPlayer.Name].Game.Rank
+	local forOption2 = (int == 1 and "MaxStamina") or (int == 2 and "MaxVitality") or (int == 3 and "MaxPower");
+	return ooooooooooh:FindFirstChild(forOption2).Value;
+end
+
+local function myOtherValues(int)
+	local newOption = (int == 1 and "Stamina") or (int == 2 and "Vitality") or (int == 3 and "Power");
+	return ReplicatedStorage.Players[localPlayer.Name].Game:FindFirstChild(newOption).Value;
+end
+
 spawn(function()
-	print('scrub')
+	local isStan = false;
+	local isVit = false;
+	local isPow = false;
+	local IsFarming = false;
+	while true do 
+		if autoFarmT then 
+			if LabelFind(1) ~= myOtherValues(1) and IsFarming ~= true then 
+				IsFarming = true;
+				isStan = true;
+				repeat wait()
+					for i,v in pairs(workspace:GetDescendants()) do 
+						if v:IsA("Model") and v.Name == 'Treadmill' then 
+							if IsFarming and isStan then 
+								local object = v:FindFirstChildOfClass("Part").Position
+								localPlayer.Character:MoveTo(object)
+								wait(.05)
+								for i = 1,3 do 
+									moveTo(object)
+								end
+							end
+							wait(.6)
+						end
+					end
+				until LabelFind(1) == myOtherValues(1) or autoFarmT == false;
+				IsFarming = false;
+				IsStan = false;
+			elseif LabelFind(2) ~= myOtherValues(2) and IsFarming ~= true then
+				IsFarming = true;
+				isVit = true;
+				repeat wait()
+            		for i,v in pairs(workspace.VitalityTrainingFolder:GetChildren()) do 
+						if v:IsA("Model") and IsFarming and isVit then
+							local thing = v:FindFirstChildOfClass('UnionOperation').Position
+							localPlayer.Character:MoveTo(thing)
+							wait(.2)
+							moveTo(thing + Vector3.new(math.random(1,6),0,math.random(1,6)))
+						end
+						wait(3)
+					end
+				until LabelFind(2) == myOtherValues(2) or autoFarmT == false;
+				IsFarming = false;
+				isVit = false;
+			else
+				if LabelFind(3) ~= myOtherValues(3) and IsFarming ~= true then
+					IsFarming = true;
+					isPow = true;
+					repeat wait()
+						for i,v in pairs(workspace.PowerTrainingFolder:GetChildren()) do 
+							if v:IsA("Model") and IsFarming and isPow then 
+								Event1:FireServer("Punching",ModelTo) 
+							end
+							wait(.25)
+						end
+					until LabelFind(3) == myOtherValues(3) or autoFarmT == false;
+					IsFarming = false;
+					isPow = false;
+				end
+			end
+		end
+		wait()
+	end
 end)
+
+print(LabelFind(1))
 
 autoTab.Show()
 library.FormatWindows()
