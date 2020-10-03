@@ -86,6 +86,53 @@ farmTab:AddToggle('Farm Endurance',function(bool)
     AutoEndurance = bool;
 end)
 
+autoTab:AddToggle('Auto Kill',function(bool)
+    killAutomatic = bool
+end)
+
+local PlayersFolder = ReplicatedStorage.Players;
+function plrToKill()
+    for i,v in pairs(game:GetService("Players"):GetPlayers()) do 
+        if (v.Name ~= game.Players.LocalPlayer.Name and v.Character) then 
+            if (PlayersFolder[v.Name] and PlayersFolder[v.Name].Game.PvP.Value) then  
+                if killAutomatic then 
+                    return v;
+                end
+            end
+        end
+    end
+end
+
+function teleportTo(player)
+    local myChar = localPlayer.Character
+    local humanoidRoot = myChar:FindFirstChild("HumanoidRootPart");
+    
+    if player and player.Character and player.Character.Humanoid.Health > 1 then 
+        repeat
+            local playerChar = player.Character;
+            humanoidRoot.CFrame = playerChar.HumanoidRootPart.CFrame*Vector3.new(-humanoidRoot.CFrame.lookVector)
+            wait()
+        until autoKill == false or (not player.Character and player.Character.Humanoid.Health < 1)
+    end
+end 
+
+teleportTo(game:GetService("Players"))
+
+spawn(function()
+    while true do 
+        if killAutomatic then 
+            local plr = plrToKill()
+            repeat
+                teleportTo(plr)
+                local random = (math.random(1,2) == 2 and "Punch" or "Stomp")
+                ReplicatedStorage.Network.Port1:FireServer(random,{plr})
+                wait(.05)
+            until killAutomatic == false or (plr.Character and PlayersFolder[plr.Name].Game.Health == 0)
+        end
+        wait()
+    end
+end)
+
 spawn(function()
     local isTreading = false;
     local oldTread;
@@ -228,8 +275,6 @@ spawn(function()
         end)
     end
 end)
-
-
 
 autoTab:AddToggle('Auto-Rebirth',function(bool)
     rebirthAuto = bool;
