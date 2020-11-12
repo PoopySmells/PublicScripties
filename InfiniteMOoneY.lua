@@ -1,11 +1,6 @@
-function setreadyonly(tbl,bool)
- return setreadonly(tbl,bool)
-end
-
 local mt = getrawmetatable(game);
 local old = mt.__namecall
-setreadyonly(mt,false)
-
+setreadonly(mt,false)
 mt.__namecall = newcclosure(function(remote,...)
     args = {...}
     method = tostring(getnamecallmethod())
@@ -15,4 +10,4 @@ mt.__namecall = newcclosure(function(remote,...)
     end
     return old(remote,...)
 end)
-setreadyonly(mt,true)
+setreadonly(mt,true)
